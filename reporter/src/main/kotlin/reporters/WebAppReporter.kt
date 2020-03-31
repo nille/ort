@@ -19,10 +19,13 @@
 
 package org.ossreviewtoolkit.reporter.reporters
 
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
+
 import org.ossreviewtoolkit.reporter.Reporter
 import org.ossreviewtoolkit.reporter.ReporterInput
 import org.ossreviewtoolkit.reporter.model.EvaluatedModel
 
+import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 
 class WebAppReporter : Reporter {
@@ -42,10 +45,16 @@ class WebAppReporter : Reporter {
         val prefix = template.substring(0, index)
         val suffix = template.substring(index + placeholder.length, template.length)
 
-        outputStream.bufferedWriter().use {
-            it.write(prefix)
-            evaluatedModel.toJson(it, prettyPrint = false)
-            it.write(suffix)
+        val compressedReport = ByteArrayOutputStream().use { byteOut ->
+            val gzipWriter = GzipCompressorOutputStream(byteOut).bufferedWriter()
+            evaluatedModel.toJson(gzipWriter, prettyPrint = false)
+            byteOut.toByteArray()
+        }
+
+        outputStream.use { out ->
+            out.write(prefix.toByteArray())
+            out.write(compressedReport)
+            out.write(suffix.toByteArray())
         }
     }
 }
