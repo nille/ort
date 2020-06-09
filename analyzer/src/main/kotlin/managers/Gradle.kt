@@ -177,6 +177,7 @@ class Gradle(
 
                 val dependencyTreeModel = connection
                     .model(DependencyTreeModel::class.java)
+                    .setJvmArguments("-Duser.home=${getUserHomeDirectory()}")
                     .setStandardOutput(stdout)
                     .setStandardError(stderr)
                     .withArguments("--init-script", initScriptFile.path)
