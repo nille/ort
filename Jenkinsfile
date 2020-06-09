@@ -352,7 +352,7 @@ pipeline {
 
             steps {
                 sh '''
-                    /opt/ort/bin/ort $LOG_LEVEL report -f CycloneDX,NoticeByPackage,NoticeSummary,StaticHTML,WebApp -i out/results/current-result.yml -o out/results/reporter
+                    /opt/ort/bin/ort $LOG_LEVEL report -f StaticHTML,NoticeByPackage -i out/results/current-result.yml -o out/results/reporter
                 '''
             }
 

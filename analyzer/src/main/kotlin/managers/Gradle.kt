@@ -164,8 +164,12 @@ class Gradle(
             gradleConnector.daemonMaxIdleTime(10, TimeUnit.SECONDS)
         }
 
+        log.info { "XXX: " + getUserHomeDirectory() }
         val projectDir = definitionFile.parentFile
-        val gradleConnection = gradleConnector.forProjectDirectory(projectDir).connect()
+        val gradleConnection = gradleConnector
+            .useGradleUserHomeDir(getUserHomeDirectory().resolve(".gradle"))
+            .forProjectDirectory(projectDir)
+            .connect()
 
         return temporaryProperties(*gradleSystemProperties.toTypedArray()) {
             gradleConnection.use { connection ->
