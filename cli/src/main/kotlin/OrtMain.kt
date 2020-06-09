@@ -94,6 +94,8 @@ class OrtMain : CliktCommand(name = ORT_NAME, epilog = "* denotes required optio
     }
 
     init {
+        fixupUserHomeProperty()
+
         context {
             expandArgumentFiles = false
             helpFormatter = OrtHelpFormatter()
@@ -168,7 +170,6 @@ class OrtMain : CliktCommand(name = ORT_NAME, epilog = "* denotes required optio
  * The entry point for the application with [args] being the list of arguments.
  */
 fun main(args: Array<String>) {
-    fixupUserHomeProperty()
     OrtMain().main(args)
     exitProcess(0)
 }
