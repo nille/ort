@@ -33,6 +33,7 @@ import org.ossreviewtoolkit.utils.getOrtDataDirectory
 import org.ossreviewtoolkit.utils.log
 import org.ossreviewtoolkit.utils.storage.FileArchiver
 import org.ossreviewtoolkit.utils.storage.LocalFileStorage
+import org.ossreviewtoolkit.utils.warnOnce
 
 import java.io.File
 import java.nio.file.Path
@@ -101,7 +102,7 @@ class NoticeByPackageProcessor(input: ReporterInput) : AbstractNoticeReporter.No
             .filter { (license, _) ->
                 input.licenseTextProvider.hasLicenseText(license).also {
                     if (!it) {
-                        NoticeByPackageProcessor.log.warn {
+                        NoticeByPackageProcessor.log.warnOnce {
                             "No license text found for license '$license', it will be omitted from the report."
                         }
                     }
@@ -156,7 +157,7 @@ class NoticeByPackageProcessor(input: ReporterInput) : AbstractNoticeReporter.No
                 .filter { (license, _) ->
                     input.licenseTextProvider.hasLicenseText(license).also {
                         if (!it) {
-                            NoticeByPackageProcessor.log.warn {
+                            NoticeByPackageProcessor.log.warnOnce {
                                 "No license text found for license '$license', it will be omitted from the report."
                             }
                         }
