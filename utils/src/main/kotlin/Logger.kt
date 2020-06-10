@@ -19,6 +19,7 @@
 
 package org.ossreviewtoolkit.utils
 
+import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.kotlin.KotlinLogger
 import org.apache.logging.log4j.kotlin.loggerOf
 
@@ -34,3 +35,26 @@ val loggerOfClass = ConcurrentHashMap<Any, KotlinLogger>()
  */
 val <reified T : Any> T.log: KotlinLogger
     inline get() = loggerOfClass.getOrPut(T::class.java) { loggerOf(T::class.java) }
+
+private val KotlinLogger.statements: MutableSet<Pair<Level, String>>
+    get() = mutableSetOf()
+
+fun KotlinLogger.infoOnce(supplier: () -> String) {
+    if (log.delegate.isInfoEnabled) {
+        val statement = Level.INFO to supplier()
+        if (statement !in statements) {
+            statements += statement
+            log.info(statement.second)
+        }
+    }
+}
+
+fun KotlinLogger.warnOnce(supplier: () -> String) {
+    if (log.delegate.isWarnEnabled) {
+        val statement = Level.WARN to supplier()
+        if (statement !in statements) {
+            statements += statement
+            log.warn(statement.second)
+        }
+    }
+}
